@@ -1,0 +1,49 @@
+TODO:
+	* revise temporary variable usage to prevent bst_temp collisions
+
+	* implement bst_findnode() and
+		* possibly reimplement bst_insertnode() to use it
+
+	* reimplement bst_traverseinorder() to be more efficient,
+		not using bst_getinordersuccessor to to it
+
+	* implement other traversal functions
+
+	* standardize argument order across functions (necessarily breaking API)
+
+
+Architecture:
+A node is a variable containing a string in the format:
+value:parent_name:left_child_name:right_child_name
+
+Constructing variable identifiers and feeding them to eval for substiution
+is used to invent pointers.
+
+Some patterns:
+If you have a string p that names a node variable n,
+	n=val:par:left:right
+	p=n
+to dereference p to n and provide its contents as an argument to echo:
+	eval echo '"$'$p'"'
+to set n equal to the string "hello, world" through reference p:
+	eval $p=\"hello, world\"
+and it follows to copy a node n1 referenced by p1,
+	n1=val1:par1:left1:right1
+	p1=n1
+to n through reference p:
+	eval $p='"$'$p1'"'
+or if the contents of n1 were to be processed
+by another utility before assignment:
+	eval $p='"'`eval echo '"$'$p1'"'`'"'
+
+Given a variable n referenced by p,
+	n=hello
+	p=n
+to free variable n:
+	unset n
+or to free n through reference p:
+	unset $p
+
+Expressions that are expanded to a node name are, by convention, not quoted,
+whereas expressions expanding to node contents or the value member of a node
+are by necessity quoted to avoid field-splitting.

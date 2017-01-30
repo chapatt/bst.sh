@@ -1,0 +1,9 @@
+A binary search tree implemented in relatively-portable Unix/POSIX/Bourne shell.
+
+It is slow. Recusion is occasionally used--beware.
+
+The library utilizes the namespace bst.
+
+The trees constructed by the library functions inhabit the namespaces
+specified in arguments to some functions, e.g. for a tree in namespace n,
+the following variables are created: n_count, and n0, n1, n2, ...

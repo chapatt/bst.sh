@@ -4,7 +4,8 @@ test_bst_incrementcount() {
 	unset t_count
 	if bst_incrementcount t \
 	   && [ -z "`bst_incrementcount t`" ] \
-	   && [ $t_count = 1 ];
+	   && [ $t_count = 1 ] \
+	   && unset t_count;
 	then
 		return 0
 	else
@@ -74,13 +75,47 @@ test_bst_hasright() {
 	fi
 }
 
+test_bst_generatenode() {
+	if bst_generatenode t>/dev/null \
+	   && [ "`bst_generatenode t`" = "t0" ];
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
+test_bst_insertleft() {
+	t0=":::"
+	if left_node=`bst_insertleft a t0 t` \
+	   && bst_insertleft a t0 t \
+	   && [ "`bst_getleft $t0`" = "$left_node" ];
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
+test_bst_insertright() {
+	if false;
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
 tests="bst_incrementcount
        bst_getvalue
        bst_getparent
        bst_getleft
        bst_getright
        bst_hasleft
-       bst_hasright"
+       bst_hasright
+       bst_generatenode
+       bst_insertleft
+       bst_insertright"
 
 cols=`stty size | cut -d " " -f 2`
 

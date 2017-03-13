@@ -61,6 +61,7 @@ bst_insertleft() {
         bst_incrementcount "$3"
 	eval bst_setleft `bst_generatenode $3` $2
         eval `eval bst_getleft '"$'$2'"'`='${1}':'${2}'::
+	# FIXME! should I return name of inserted node? echo `bst_getleft $2`
 }
 
 # $1: value, $2: parent node name, $3: namespace

@@ -2,32 +2,37 @@
 # Copyright (c) 2017 Chase Patterson
 #
 
+# Increment variable $1_count
 # $1: namespace
 bst_incrementcount() {
 	eval ${1}_count=`eval expr '$'${1}_count + 1`
 }
 
+# Print value of node $1
 # $1: node
 bst_getvalue() {
 	echo "$1" | sed -n "s/^\(.*\):.*:.*:.*$/\1/p"
 }
 
+# Print name of parent of node $1
 # $1: node
 bst_getparent() {
 	echo "$1" | sed -n "s/^.*:\(.*\):.*:.*$/\1/p"
 }
 
+# Print name of left child of node $1
 # $1: node
 bst_getleft() {
 	echo "$1" | sed -n "s/^.*:.*:\(.*\):.*$/\1/p"
 }
 
+# Print name of left child of node $1
 # $1: node
 bst_getright() {
 	echo "$1" | sed -n "s/^.*:.*:.*:\(.*\)$/\1/p"
 }
 
-# If node has left child: return 0; else: return 1
+# If node $1 has left child: return 0; else: return 1
 # $1: node
 bst_hasleft() {
 	if [ -n "`eval bst_getleft '"'$1'"'`" ]; then
@@ -37,7 +42,7 @@ bst_hasleft() {
 	fi
 }
 
-# If node has right child: return 0; else: return 1
+# If node $1 has right child: return 0; else: return 1
 # $1: node
 bst_hasright() {
 	if [ -n "`eval bst_getright '"'$1'"'`" ]; then
@@ -47,6 +52,8 @@ bst_hasright() {
 	fi
 }
 
+# Print node name of next node in namespace $1
+# Does not increment node count!
 # $1: namespace
 bst_generatenode() {
 	if eval [ -z '$'${1}_count ]; then
@@ -56,6 +63,7 @@ bst_generatenode() {
 	fi
 }
 
+# Set left child of node named by $2 to new node with value $1
 # $1: value, $2: parent node name, $3: namespace
 bst_insertleft() {
         bst_incrementcount "$3"
@@ -64,6 +72,7 @@ bst_insertleft() {
 	# FIXME! should I return name of inserted node? echo `bst_getleft $2`
 }
 
+# Set right child of node named by $2 to new node with value $1
 # $1: value, $2: parent node name, $3: namespace
 bst_insertright() {
 	bst_incrementcount "$3"
@@ -105,16 +114,19 @@ bst_insertnodeiter() {
 	fi
 }
 
+# Insert new node with value $1 in tree with namespace $2
 # $1: value, $2: namespace
 bst_insertnode() {
 	bst_insertnodeiter "$1" ${2}0 $2 ''
 }
 
+# Copy node named by $1 to node named by $2
 # $1: source node name, $2: destination node name
 bst_copynode() {
 	eval $2='"$'$1'"'
 }
 
+# If node named by $1 has children, set childrens' respective parents to $1
 # $1: node name
 bst_claimchildren() {
 	if eval bst_hasleft '"$'$1'"'; then
@@ -125,6 +137,7 @@ bst_claimchildren() {
 	fi
 }
 
+# Delete node named $1
 # $1: node name, $2: namespace
 bst_deletenode() {
 	# has no children
@@ -217,7 +230,7 @@ bst_getinordersuccessor() {
 	unset bst_temp
 }
 
-# Print names of nodes in order; if tree doesn't exist: return 1
+# Print names of nodes in namespace $1 in order; if tree doesn't exist: return 1
 # $1: namespace
 bst_traverseinorder() {
 	bst_temp1=`bst_findmin ${1}0`
@@ -227,21 +240,25 @@ bst_traverseinorder() {
 	done
 }
 
+# Set value of node with name $2 to $1
 # $1: value, $2: node name
 bst_setvalue() {
 	eval $2='"'$1:`eval bst_getparent '"$'$2'"'`:`eval bst_getleft '"$'$2'"'`:`eval bst_getright '"$'$2'"'`'"'
 }
 
+# Set parent of node with name $2 to $1
 # $1: parent name, $2: node name
 bst_setparent() {
 	eval $2='"'`eval bst_getvalue '"$'$2'"'`:$1:`eval bst_getleft '"$'$2'"'`:`eval bst_getright '"$'$2'"'`'"'
 }
 
+# Set left child of node with name $2 to $1
 # $1: left name, $2: node name
 bst_setleft() {
 	eval $2='"'`eval bst_getvalue '"$'$2'"'`:`eval bst_getparent '"$'$2'"'`:$1:`eval bst_getright '"$'$2'"'`'"'
 }
 
+# Set right child of node with name $2 to $1
 # $1: right name, $2: node name
 bst_setright() {
 	eval $2='"'`eval bst_getvalue '"$'$2'"'`:`eval bst_getparent '"$'$2'"'`:`eval bst_getleft '"$'$2'"'`:$1'"'

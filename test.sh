@@ -117,14 +117,18 @@ tests="bst_incrementcount
        bst_insertleft
        bst_insertright"
 
+MIN_COLS=35
 cols=`stty size | cut -d " " -f 2`
 
 fail_count=0
 
 for i in $tests; do
-	printf "Testing %s%n" $i n
+	printf "Testing %.*s%n" \
+		`expr \`[ $MIN_COLS -gt $cols ] && echo $MIN_COLS || echo $cols\` - 15` \
+		$i \
+		so_far
 	result="`test_$i && echo PASSED || echo FAILED`"
-	leader="`head -c \`expr $cols - $n - 6\` < /dev/zero | tr '\0' '.'`"
+	leader="`head -c \`expr \\\`[ $cols -lt $MIN_COLS ] && echo $MIN_COLS || echo $cols\\\` - $so_far - 6\` < /dev/zero | tr '\0' '.'`"
 	printf "%s%s\n" $leader $result
 	if [ $result = "FAILED" ]; then
 		fail_count=`expr $fail_count + 1`
